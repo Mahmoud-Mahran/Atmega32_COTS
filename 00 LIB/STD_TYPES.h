@@ -15,4 +15,11 @@ typedef  	float					     f32;
 typedef  	double					     f64;
 typedef  	long double					f128;
 
+void delay_ms(u32 ticks);
+u64 power(u64 num, u8 pow);
+
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #endif
