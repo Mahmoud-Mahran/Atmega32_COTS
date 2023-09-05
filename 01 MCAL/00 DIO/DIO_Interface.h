@@ -1,19 +1,53 @@
+/*
+ * DIO_Interface.h
+ *
+ *  Created on: Aug 6, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef _DIO_INTERFACE_H_
 #define _DIO_INTERFACE_H_
-
-/*function that takes the port number, pin, output or input mode and returns an int for error handling
- initializes the pin based on input arguments */
+/***
+ * initializes the pin based on input arguments, returns an int for error handling
+ * INPUT: (u8) port number, (u8) pin number, (u8) mode
+ * OUTPUT: void
+ * Returns: (int) error state
+ * **/
 int MDIO_intInit(u8 portNumber, u8 pinNumber, u8 direction);
-/*function that takes the port number, pin and a value to set and returns an int for error handling
- sets the pin value based on input arguments */
+/***
+ * sets the pin value based on input arguments, returns an int for error handling
+ * INPUT: (u8) port number, (u8) pin number, (u8) value
+ * OUTPUT: void
+ * Returns: (int) error state
+ * **/
 int MDIO_intWrite(u8 portNumber, u8 pinNumber, u8 value);
-/*function that takes the port number and pin and returns an int for error handling
- toggles the pin value */
+/***
+ * toggles the pin value, returns an int for error handling
+ * INPUT: (u8) port number, (u8) pin number
+ * OUTPUT: void
+ * Returns: (int) error state
+ * **/
 int MDIO_intToggle(u8 portNumber, u8 pinNumber);
-/*function that takes the port number, pin and a  pointer to store value and returns an int for error handling.
- reads the pin value and stores it in the address given by the pointer */
+/***
+ * reads the pin value and stores it in the address given by the pointer, returns an int for error handling
+ * INPUT: (u8) port number, (u8) pin number, (u8*) pointer to store value
+ * OUTPUT: pin value
+ * Returns: (int) error state
+ * **/
 int MDIO_intRead(u8 portNumber, u8 pinNumber, u8 *value);
+/***
+ * sets the port value based on input arguments, returns an int for error handling
+ * INPUT: (u8) port number, (u8) value
+ * OUTPUT: void
+ * Returns: (int) error state
+ * **/
 int MDIO_intWritePort(u8 portNumber, u8 value);
+/***
+ * initializes the port based on input arguments, returns an int for error handling
+ * INPUT: (u8) port number, (u8) direction
+ * OUTPUT: void
+ * Returns: (int) error state
+ * **/
 int MDIO_intInitPort(u8 portNumber, u8 direction);
 //helper macros for ports
 #define DIO_PORT_A   'A'

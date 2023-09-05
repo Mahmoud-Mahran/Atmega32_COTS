@@ -1,3 +1,10 @@
+/*
+ * UART_private.h
+ *
+ *  Created on: Aug 19, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef UART_PRIVATE_H
 #define UART_PRIVATE_H
 

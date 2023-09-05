@@ -1,11 +1,32 @@
+/*
+ * TIMER_program.c
+ *
+ *  Created on: Aug 17, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #include "../../00 LIB/STD_TYPES.h"
 #include "../../00 LIB/BIT_MATH.h"
 #include "TIMER_private.h"
 #include "TIMER_config.h"
 #include "TIMER_interface.h"
+//debuggig
+#include "../00 DIO/DIO_Interface.h"
+#include "../../02 HAL/03 LCD/LCD_interface.h"
 
-void (*ptr_func[8])(void) = { NULL };
+void (*ptr_func[8])(void) = {NULL };
+//ICU vars
+#define NO_READINGS          30
+
 void MTIMER_voidInit(void) {
+	TIMSK = 0x00;
+	TIFR = 0x00;
+	TIMSK = (TIMER_0_OC_INTERRUPT << OCIE0) | (TIMER_0_OVF_INTERRUPT << TOIE0)
+			| (TIMER_1_IC_INTERRUPT << TICIE1)
+			| (TIMER_1_OCA_INTERRUPT << OCIE1A)
+			| (TIMER_1_OCB_INTERRUPT << OCIE1B)
+			| (TIMER_1_OVF_INTERRUPT << TOIE1) | (TIMER_2_OC_INTERRUPT << OCIE2)
+			| (TIMER_2_OVF_INTERRUPT << TOIE2);
 #if TIMER_0 == ENABLE
 	TCCR0 = ((TCCR0 & 0x00) | TIMER_0_MODE);
 	TCNT0 = 0x00;
@@ -30,14 +51,7 @@ void MTIMER_voidInit(void) {
 	OCR2 = 0x00;
 	ASSR = 0x00;
 #endif
-	TIMSK = 0x00;
-	TIMSK = (TIMER_0_OC_INTERRUPT << OCIE0) | (TIMER_0_OVF_INTERRUPT << TOIE0)
-			| (TIMER_1_IC_INTERRUPT << TICIE1)
-			| (TIMER_1_OCA_INTERRUPT << OCIE1A)
-			| (TIMER_1_OCB_INTERRUPT << OCIE1B)
-			| (TIMER_1_OVF_INTERRUPT << TOIE1) | (TIMER_2_OC_INTERRUPT << OCIE2)
-			| (TIMER_2_OVF_INTERRUPT << TOIE2);
-	TIFR = 0x00;
+
 }
 void MTIMER_voidStart(u8 u8cpyTimerNumber) {
 	switch (u8cpyTimerNumber) {
@@ -45,6 +59,8 @@ void MTIMER_voidStart(u8 u8cpyTimerNumber) {
 		TCCR0 |= (TIMER_0_CLK << CS00);
 		break;
 	case TIMER_TM1:
+		TCNT1H = 0x00;
+		TCNT1L = 0x00;
 		TCCR1B |= (TIMER_1_CLK << CS10);
 		break;
 	case TIMER_TM2:
@@ -60,12 +76,13 @@ void MTIMER_voidStop(u8 u8cpyTimerNumber) {
 		break;
 	case TIMER_TM1:
 		TCCR1B &= 0xF8;
+		TCNT1H = 0x00;
+		TCNT1L = 0x00;
 		break;
 	case TIMER_TM2:
 		TCCR2 &= 0xF8;
 		break;
 	}
-
 }
 void MTIMER_voidRead(u8 u8cpyTimerNumber, u16* u16TimerValue) {
 	switch (u8cpyTimerNumber) {
@@ -86,8 +103,8 @@ void MTIMER_voidPreload(u16 u16cpyValue, u8 u8cpyTimerNumber) {
 		TCNT0 = (u8) u16cpyValue;
 		break;
 	case TIMER_TM1:
-		TCNT1L = (u8) u16cpyValue;
 		TCNT1H = (u8) (u16cpyValue >> 8);
+		TCNT1L = (u8) u16cpyValue;
 		break;
 	case TIMER_TM2:
 		TCNT2 = (u8) u16cpyValue;
@@ -171,11 +188,58 @@ void MTIMER_voidSetCallBack(u8 u8cpyTimerInterruptNum, void (*ptr)(void)) {
 		//input error
 	}
 }
+
 void MTIMER_voidSetICUEdge(u8 u8cpyIC_EDGE) {
-	TCCR1B &= u8cpyIC_EDGE;
+	//Clr_Bit(TIMSK, TICIE1);
+	TCCR1B = (TCCR1B & 0x9F) | (u8cpyIC_EDGE << ICES1);
+	Set_Bit(TIFR, ICF1);
+	//Set_Bit(TIMSK, TICIE1);
 }
 void MTIMER_voidGetICU(u16 *u8cpy_Value) {
-	*u8cpy_Value = (ICR1L | (ICR1H << 8));
+	*u8cpy_Value = ((u16) ICR1L | ((u16) ICR1H << 8));
+}
+void MTIMER_voidMeasureSignal(u32 *u16cpy_frequency, u32 *u16cpy_timeOn) {
+	u16 Ticks[3] = { 0 };
+	u16 Period = 0;
+	u16 Ton = 0;
+	Set_Bit(TIFR, ICF1);
+	MTIMER_voidStart(TIMER_TM1);
+	while (!(TIFR & (1 << ICF1)))
+		;
+	MTIMER_voidGetICU(&Ticks[0]);
+	MTIMER_voidSetICUEdge(TIMER_1_IC_RISING);
+	while (!(TIFR & (1 << ICF1)))
+		;
+	MTIMER_voidGetICU(&Ticks[1]);
+	MTIMER_voidSetICUEdge(TIMER_1_IC_FALLING);
+	while (!(TIFR & (1 << ICF1)))
+		;
+	MTIMER_voidGetICU(&Ticks[2]);
+	if (Ticks[2] > Ticks[1]) {
+		Period = Ticks[2] - Ticks[0];
+	} else if (Ticks[2] < Ticks[1]) {
+		Period = (0xffff - Ticks[0]) + Ticks[2];
+	}
+	if (Ticks[2] > Ticks[1]) {
+		Ton = Ticks[2] - Ticks[1];
+	} else if (Ticks[2] < Ticks[1]) {
+		Ton = (0xffff - Ticks[1]) + Ticks[2];
+	}
+	MTIMER_voidStop(TIMER_TM1);
+	u32 prescaler = 0;
+#if TIMER_1_CLK == PRE_8
+	prescaler = 8;
+#elif TIMER_1_CLK == NO_PRE
+	prescaler = 1;
+#elif TIMER_1_CLK == PRE_64PRE_8
+	prescaler = 64;
+#elif TIMER_1_CLK == PRE_256
+	prescaler = 256;
+#elif TIMER_1_CLK == PRE_1024
+	prescaler = 1024;
+#endif
+	*u16cpy_frequency =  (u16) ((f64)((f64)F_CPU / (f64)prescaler)   / (f64) Period);
+	*u16cpy_timeOn = (u16) ( ( (f64)prescaler / (f64)((f64)F_CPU / 1000000.0) ) * Ton);
 }
 void __vector_4(void) {
 	if (ptr_func[TIMER2_COMP] != NULL)
@@ -188,19 +252,25 @@ void __vector_5(void) {
 void __vector_6(void) {
 	if (ptr_func[TIMER1_CAPT] != NULL)
 		ptr_func[TIMER1_CAPT]();
+
 }
 void __vector_7(void) {
-	ptr_func[TIMER1_COMPA]();
+	if (ptr_func[TIMER1_COMPA] != NULL)
+		ptr_func[TIMER1_COMPA]();
 }
 void __vector_8(void) {
-	ptr_func[TIMER1_COMPB]();
+	if (ptr_func[TIMER1_COMPB] != NULL)
+		ptr_func[TIMER1_COMPB]();
 }
 void __vector_9(void) {
-	ptr_func[TIMER1_OVF]();
+	if (ptr_func[TIMER1_OVF] != NULL)
+		ptr_func[TIMER1_OVF]();
 }
 void __vector_10(void) {
-	ptr_func[TIMER0_COMP]();
+	if (ptr_func[TIMER0_COMP] != NULL)
+		ptr_func[TIMER0_COMP]();
 }
 void __vector_11(void) {
-	ptr_func[TIMER0_OVF]();
+	if (ptr_func[TIMER0_OVF] != NULL)
+		ptr_func[TIMER0_OVF]();
 }

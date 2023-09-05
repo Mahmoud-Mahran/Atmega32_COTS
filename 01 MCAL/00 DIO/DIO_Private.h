@@ -1,3 +1,10 @@
+/*
+ * DIO_Private.h
+ *
+ *  Created on: Aug 6, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef _DIO_PRIVATE_H_
 #define _DIO_PRIVATE_H_
 

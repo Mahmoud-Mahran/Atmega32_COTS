@@ -1,3 +1,10 @@
+/*
+ * TWI_private.h
+ *
+ *  Created on: Aug 22, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef TWI_PRIVATE_H
 #define TWI_PRIVATE_H
 

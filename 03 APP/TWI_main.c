@@ -1,18 +1,14 @@
-#include "../00 LIB/STD_TYPES.h"
-#include "../00 LIB/BIT_MATH.h"
-#include "../01 MCAL/07 TWI/TWI_interface.h"
-
-int main(void){
-	MTWI_voidInit();
-	MTWI_voidSendStart();
-	MTWI_voidSendSlaveAddress((15<<1), TWI_WRITE);
-	u8 data = 'H';
-	//u8 dummy = 0x00;
-	//MTWI_voidData(&dummy, TWI_WRITE);
-	MTWI_voidData(&data, TWI_WRITE);
-	MTWI_voidSendStop();
-	while(1){
-
-	}
-	return 0;
-}
+//#include "../00 LIB/STD_TYPES.h"
+//#include "../00 LIB/BIT_MATH.h"
+//#include "../01 MCAL/00 DIO/DIO_Interface.h"
+//#include "../01 MCAL/07 TWI/TWI_interface.h"
+//#include "../02 HAL/03 LCD/LCD_interface.h"
+//int main(void) {
+//	HLCD_voidInit();
+//	HLCD_voidSendChar('A');
+//	delay_ms(500);
+//	while (1) {
+//
+//	}
+//	return 0;
+//}

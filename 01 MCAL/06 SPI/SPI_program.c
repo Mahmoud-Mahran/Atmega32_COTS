@@ -1,3 +1,10 @@
+/*
+ * SPI_program.c
+ *
+ *  Created on: Aug 21, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #include "../../00 LIB/STD_TYPES.h"
 #include "../../00 LIB/BIT_MATH.h"
 #include "SPI_private.h"
@@ -13,7 +20,6 @@ void MSPI_voidMasterInit(u8 cpy_u8SS_Port, u8 cpy_u8SS_Pin){
 	SPCR = 0x00;
 	SPCR = (1<<SPE) | (SPI_INTERRUPT<<SPIE) | SPI_DATA_ORDDER | (1<<MSTR) | SPI_CLK_POL | SPI_CLK_PHA | (SPI_CLK & 0x03);
 	SPSR = ((SPSR & 0x00) | (SPI_CLK>>2));
-
 }
 void MSPI_voidSlaveInit(void){
 	MDIO_intInit(DIO_PORT_B, DIO_PIN4, DIO_INPUT);
@@ -22,7 +28,7 @@ void MSPI_voidSlaveInit(void){
 	MDIO_intInit(DIO_PORT_B, DIO_PIN7, DIO_INPUT);
 	SPCR = (1<<SPE) |(0<<MSTR);
 }
-void MSPI_voidMasterTRansmitReceive(u8 *cpy_u8Data,u8 cpy_u8SS_Port, u8 cpy_u8SS_Pin){
+void MSPI_voidMasterTransmitReceive(u8 *cpy_u8Data,u8 cpy_u8SS_Port, u8 cpy_u8SS_Pin){
 MDIO_intWrite(cpy_u8SS_Port, cpy_u8SS_Pin, DIO_LOW);
 /* Start transmission */
 SPDR = *cpy_u8Data;
@@ -31,7 +37,7 @@ while(!(SPSR & (1<<SPIF)));
 *cpy_u8Data = SPDR;
 MDIO_intWrite(cpy_u8SS_Port, cpy_u8SS_Pin, DIO_HIGH);
 }
-void MSPI_voidSlaveReceive(u8 *cpy_u8Data){
+void MSPI_voidSlaveTransmitReceive(u8 *cpy_u8Data){
 SPDR = *cpy_u8Data;
 /* Wait for transmission complete */
 while(!(SPSR & (1<<SPIF)));

@@ -1,3 +1,10 @@
+/*
+ * LED_interface.h
+ *
+ *  Created on: Aug 13, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef LED_INTERFACE_H_
 #define LED_INTERFACE_H_
 //helper macros for error handling
@@ -11,16 +18,16 @@ typedef struct LEDS{
 }LEDS;
 /*function that takes a "LEDS" struct and returns an int for error handling 
 initializes led according to given arguments */
-u8 LED_init(LEDS *led);
+u8 HLED_init(LEDS *led);
 /*function that takes a "LEDS" struct and returns an int for error handling
 turns on led */
-u8 LED_on(LEDS *led);
+u8 HLED_on(LEDS *led);
 /*function that takes a "LEDS" struct and returns an int for error handling
 turns off led */
-u8 LED_off(LEDS *led);
+u8 HLED_off(LEDS *led);
 /*function that takes a "LEDS" struct and returns an int for error handling
 toggles led */
-u8 LED_toggle(LEDS *led);
+u8 HLED_toggle(LEDS *led);
 
 
 

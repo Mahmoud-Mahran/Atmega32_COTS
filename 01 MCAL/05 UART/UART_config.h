@@ -1,3 +1,10 @@
+/*
+ * UART_config.h
+ *
+ *  Created on: Aug 19, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef UART_CONFIG_H
 #define UART_CONFIG_H
 #define F_CPU                    8000000UL

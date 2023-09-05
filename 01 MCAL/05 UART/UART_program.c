@@ -1,3 +1,10 @@
+/*
+ * UART_program.c
+ *
+ *  Created on: Aug 19, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #include "../../00 LIB/STD_TYPES.h"
 #include "../../00 LIB/BIT_MATH.h"
 #include "UART_config.h"

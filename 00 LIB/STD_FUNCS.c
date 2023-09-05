@@ -1,3 +1,10 @@
+/*
+ * TWI_config.h
+ *
+ *  Created on: Aug 14, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #include "STD_TYPES.h"
 
 void delay_ms(u32 ticks){

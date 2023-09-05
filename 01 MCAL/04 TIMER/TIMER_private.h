@@ -1,3 +1,10 @@
+/*
+ * TIMER_private.h
+ *
+ *  Created on: Aug 17, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef TIMER_PRIVATE_H
 #define TIMER_PRIVATE_H
 
@@ -140,4 +147,14 @@
 #define TM2_PRE_256                                      6
 #define TM2_PRE_1024                                     7
 
+
+//TIMER ISRS
+void __vector_4  (void) __attribute__ ((signal, used));
+void __vector_5  (void) __attribute__ ((signal, used));
+void __vector_6  (void) __attribute__ ((signal, used));
+void __vector_7  (void) __attribute__ ((signal, used));
+void __vector_8  (void) __attribute__ ((signal, used));
+void __vector_9  (void) __attribute__ ((signal, used));
+void __vector_10 (void) __attribute__ ((signal, used));
+void __vector_11 (void) __attribute__ ((signal, used));
 #endif

@@ -1,3 +1,10 @@
+/*
+ * SPI_private.h
+ *
+ *  Created on: Aug 21, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef SPI_PRIVATE_H
 #define SPI_PRIVATE_H
 

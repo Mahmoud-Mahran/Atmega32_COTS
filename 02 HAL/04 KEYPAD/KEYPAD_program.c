@@ -1,4 +1,10 @@
-#include <util/delay.h>
+/*
+ * KEYPAD_program.c
+ *
+ *  Created on: Aug 11, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #include 	"../../00 LIB/BIT_MATH.h"
 #include 	"../../00 LIB/Std_Types.h"
 #include	"../../01 MCAL/00 DIO/DIO_Interface.h"
@@ -12,10 +18,10 @@ void HKEYBAD_voidInit(void) {
 	column_2_pin }, { column_3_port, column_3_pin }, { column_4_port,
 	column_4_pin } };
 	for (int i = 0; i < 4; i++) {
-		MDIO_intInit(rows[i][0], rows[i][1], DIO_OUTPUT);
-		MDIO_intWrite(rows[i][0], rows[i][1], DIO_LOW);
-		MDIO_intInit(cols[i][0], cols[i][1], DIO_INPUT);
-		MDIO_intWrite(cols[i][0], cols[i][1], DIO_HIGH);
+		MDIO_intInit(rows[i][0], rows[i][1], DIO_INPUT);
+		MDIO_intWrite(rows[i][0], rows[i][1], DIO_HIGH);
+		MDIO_intInit(cols[i][0], cols[i][1], DIO_OUTPUT);
+		MDIO_intWrite(cols[i][0], cols[i][1], DIO_LOW);
 	}
 }
 
@@ -28,14 +34,14 @@ u8 HKEYBAD_u8GetPressed(void) {
 	u8 pressed = 0xff;
 	u8 temp = 55;
 	for (int i = 0; i < 4; i++) {
-		MDIO_intRead(cols[i][0], cols[i][1], &temp);
+		MDIO_intRead(rows[i][0], rows[i][1], &temp);
 		if (temp == DIO_LOW) {
 			for (int j = 0; j < 4; j++) {
-				MDIO_intWrite(rows[j][0], rows[j][1], DIO_HIGH);
-				MDIO_intRead(cols[i][0], cols[i][1], &temp);
+				MDIO_intWrite(cols[j][0], cols[j][1], DIO_HIGH);
+				MDIO_intRead(rows[i][0], rows[i][1], &temp);
 				if (temp == DIO_HIGH)
 					pressed = keypad_chars[i][j];
-				MDIO_intWrite(rows[j][0], rows[j][1], DIO_LOW);
+				MDIO_intWrite(cols[j][0], cols[j][1], DIO_LOW);
 			}
 		}
 	}

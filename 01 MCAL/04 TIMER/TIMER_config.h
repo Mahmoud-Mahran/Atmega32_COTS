@@ -1,9 +1,19 @@
+/*
+ * TIMER_config.h
+ *
+ *  Created on: Aug 17, 2023
+ *      Author: Mahmoud Mahran
+ *     Version: 0.1
+ */
 #ifndef TIMER_CONFIG_H
 #define TIMER_CONFIG_H
+#ifndef F_CPU
+#define F_CPU         8000000UL
+#endif
 ///////////////Enable Or Disable Timers///////////////
 #define TIMER_0			    ENABLE
 #define TIMER_1			    ENABLE
-#define TIMER_2			    ENABLE
+#define TIMER_2			    DISABLE
 
 /***************************************/
 /*************TIMER0 CONFIG*************/
@@ -16,7 +26,7 @@
                PWM_PHASE_CORRECT   |OCR0 |    Immediate   |      MAX
                FAST_PWM            |0xFF |     BOTTOM     |      MAX
  */
-#define TIMER_0_MODE         CTC
+#define TIMER_0_MODE         FAST_PWM
 ///////////////CHOOSE NORMAL/CTC MODE CONFIG///////////////
 /*options in Compare Output Mode, non-PWM Mode
 OC0_OFF: Normal port operation, OC0 disconnected.
@@ -49,7 +59,7 @@ PRE_1024    : F_CPU / 1024 (From prescaler)
 EXT_FALLING : External clock source on T0 pin. Clock on falling edge.
 EXT_RISING  : External clock source on T0 pin. Clock on rising edge.
 */
-#define TIMER_0_CLK           PRE_1024
+#define TIMER_0_CLK           PRE_8
 ///////////////ENABLE TIMER0 INTERRUPTS///////////////
 #define TIMER_0_OC_INTERRUPT  DISABLE
 #define TIMER_0_OVF_INTERRUPT DISABLE
@@ -75,7 +85,7 @@ CTC_ICR1_TOP                       |ICR1   |Immediate        |MAX
 FAST_PWM_ICR1_TOP                  |ICR1   |BOTTOM           |TOP
 FAST_PWM_OCR1A_TOP                 |OCR1A  |BOTTOM           |TOP
 */
-#define TIMER_1_MODE         FAST_PWM_ICR1_TOP
+#define TIMER_1_MODE         NORMAL
 ///////////////CHOOSE NORMAL/CTC MODE CONFIG FOR CH A & CH B///////////////
 /*options in Compare Output Mode, non-PWM Mode
 OC1_OFF: Normal port operation, OC1A/OC1B disconnected.
@@ -111,7 +121,7 @@ SET_OC1: Set OC1A/OC1B on compare match when up-counting. Clear OC1A/OC1B on com
 #define ICNC                  DISABLE
 ///////////////Choose Falling OR Rising Edge For Input Capture///////////////
 //options: { TIMER_1_IC_FALLING, TIMER_1_IC_RISING }
-#define IC_EDGE               TIMER_1_IC_RISING
+#define IC_EDGE               TIMER_1_IC_FALLING
 ///////////////CHOOSE TIMER1 CLOCK SOURCE///////////////
 /*options   :
 NO_PRE      : F_CPU (No prescaling)
@@ -122,9 +132,9 @@ PRE_1024    : F_CPU / 1024 (From prescaler)
 EXT_FALLING : External clock source on T1 pin. Clock on falling edge
 EXT_RISING  : External clock source on T1 pin. Clock on rising edge.
 */
-#define TIMER_1_CLK          PRE_8
+#define TIMER_1_CLK          NO_PRE
 ///////////////ENABLE TIMER1 INTERRUPTS///////////////
-#define TIMER_1_IC_INTERRUPT  ENABLE
+#define TIMER_1_IC_INTERRUPT  DISABLE
 #define TIMER_1_OCA_INTERRUPT DISABLE
 #define TIMER_1_OCB_INTERRUPT DISABLE
 #define TIMER_1_OVF_INTERRUPT DISABLE
@@ -139,7 +149,7 @@ EXT_RISING  : External clock source on T1 pin. Clock on rising edge.
            TM2_CTC                 |OCR2 |    Immediate   |      MAX
            TM2_FAST_PWM            |0xFF |     BOTTOM     |      MAX
 */
-#define TIMER_2_MODE         TM2_PWM_PHASE_CORRECT
+#define TIMER_2_MODE         TM2_FAST_PWM
 ///////////////CHOOSE NORMAL/CTC MODE CONFIG///////////////
 /*options in Compare Output Mode, non-PWM Mode
 OC2_OFF: Normal port operation, OC2 disconnected.
@@ -154,7 +164,7 @@ OC2_OFF: Normal port operation, OC2 disconnected.
 CLR_OC2: Clear OC2 on compare match, set OC0 at BOTTOM, (non-inverting mode)
 SET_OC2: Set OC2 on compare match, clear OC0 at BOTTOM, (inverting mode)
 */
-#define TIMER_2_FAST_PWM     CLR_OC0
+#define TIMER_2_FAST_PWM     CLR_OC2
 ///////////////CHOOSE Phase Correct PWM MODE CONFIG////////////////
 /*options in Compare Output Mode,  Phase Correct PWM Mode
 OC2_OFF: Normal port operation, OC2 disconnected.
@@ -172,7 +182,7 @@ TM2_PRE_128     : F_CPU / 128 (From prescaler)
 TM2_PRE_256     : F_CPU / 256 (From prescaler)
 TM2_PRE_1024    : F_CPU / 1024 (From prescaler)
 */
-#define TIMER_2_CLK          PRE_8
+#define TIMER_2_CLK          TM2_PRE_1024
 ///////////////ENABLE TIMER2 INTERRUPTS///////////////
 #define TIMER_2_OC_INTERRUPT  DISABLE
 #define TIMER_2_OVF_INTERRUPT DISABLE
